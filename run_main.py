@@ -118,7 +118,7 @@ def main():
         init_image = np.random.normal(size=content_image.shape, scale=np.std(content_image))
 
     # check input images for style-transfer
-    utils.plot_images(content_image, style_images, init_image)
+    # utils.plot_images(content_image, style_images, init_image)
 
     # create a map for content layers info
     CONTENT_LAYERS = {}
