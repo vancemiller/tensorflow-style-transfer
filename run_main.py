@@ -14,9 +14,9 @@ def parse_args():
 
     parser.add_argument('--model_path', type=str, default='pre_trained_model', help='The directory where the pre-trained model was saved')
     parser.add_argument('--content', type=str, default='images/tubingen.jpg', help='File path of content image (notation in the paper : p)', required = True)
-    parser.add_argument('--style', type=str, default='images/starry-night.jpg', help='File path of style image (notation in the paper : a)', required = True)
+    parser.add_argument('--styles', type=str, default='styles/', help='Path to folder containing style images (notation in the paper : a)', required = True)
     parser.add_argument('--output', type=str, default='result.jpg', help='File path of output image', required = True)
-	
+
     parser.add_argument('--loss_ratio', type=float, default=1e-3, help='Weight of content-loss relative to style-loss')
 
     parser.add_argument('--content_layers', nargs='+', type=str, default=['conv4_2'], help='VGG19 layers used for content loss')
@@ -77,9 +77,9 @@ def check_args(args):
         return None
 
     try:
-        assert os.path.exists(args.style)
+        assert os.path.exists(args.styles)
     except:
-        print('There is no %s' % args.style)
+        print('There is no %s' % args.styles)
         return None
 
     return args
@@ -104,7 +104,10 @@ def main():
 
     # load content image and style image
     content_image = utils.load_image(args.content, max_size=args.max_size)
-    style_image = utils.load_image(args.style, shape=(content_image.shape[1],content_image.shape[0]))
+    style_images = []
+    for style in os.listdir(args.styles):
+        style_images.append(utils.load_image(args.styles + '/' + style, shape=(content_image.shape[1], content_image.shape[0])))
+    style_images = np.asarray(style_images)
 
     # initial guess for output
     if args.initial_type == 'content':
@@ -115,7 +118,7 @@ def main():
         init_image = np.random.normal(size=content_image.shape, scale=np.std(content_image))
 
     # check input images for style-transfer
-    # utils.plot_images(content_image,style_image, init_image)
+    utils.plot_images(content_image, style_images, init_image)
 
     # create a map for content layers info
     CONTENT_LAYERS = {}
@@ -131,13 +134,18 @@ def main():
     # open session
     sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
 
+    # format images for graph
+    init_image = add_one_dim(init_image)
+    content_image = add_one_dim(content_image)
+    for i in range(len(style_images)):
+        style_images[i] = add_one_dim(style_images[i])
     # build the graph
     st = style_transfer.StyleTransfer(session = sess,
                                       content_layer_ids = CONTENT_LAYERS,
                                       style_layer_ids = STYLE_LAYERS,
-                                      init_image = add_one_dim(init_image),
-                                      content_image = add_one_dim(content_image),
-                                      style_image = add_one_dim(style_image),
+                                      init_image = init_image,
+                                      content_image = content_image,
+                                      style_images = style_images,
                                       net = vgg_net,
                                       num_iter = args.num_iter,
                                       loss_ratio = args.loss_ratio,
@@ -155,8 +163,7 @@ def main():
 
     # save result
     utils.save_image(result_image,args.output)
-
-    # utils.plot_images(content_image,style_image, result_image)
+    utils.plot_images(content_image, style_images, result_image)
 
 if __name__ == '__main__':
     main()

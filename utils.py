@@ -47,9 +47,9 @@ def save_image(image, filename):
         PIL.Image.fromarray(image).save(file, 'jpeg')
 
 # This function plots the content-, mixed- and style-images.
-def plot_images(content_image, style_image, mixed_image):
+def plot_images(content_image, style_images, mixed_image):
     # Create figure with sub-plots.
-    fig, axes = plt.subplots(1, 3, figsize=(10, 10))
+    fig, axes = plt.subplots(1, 2 + len(style_images), figsize=(10, 5))
 
     # Adjust vertical spacing.
     fig.subplots_adjust(hspace=0.1, wspace=0.1)
@@ -66,10 +66,13 @@ def plot_images(content_image, style_image, mixed_image):
     ax.imshow(mixed_image / 255.0, interpolation='sinc')
     ax.set_xlabel("Output")
 
-    # Plot the style-image
-    ax = axes.flat[2]
-    ax.imshow(style_image / 255.0, interpolation='sinc')
-    ax.set_xlabel("Style")
+    flat = 1
+    # Plot the style-images
+    for style_image in style_images:
+      flat += 1
+      ax = axes.flat[flat]
+      ax.imshow(style_image / 255.0, interpolation='sinc')
+      ax.set_xlabel("Style")
 
     # Remove ticks from all the plots.
     for ax in axes.flat:

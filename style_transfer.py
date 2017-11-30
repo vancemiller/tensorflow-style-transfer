@@ -5,7 +5,7 @@ import collections
 class StyleTransfer:
 
     def __init__(self, content_layer_ids, style_layer_ids, init_image, content_image,
-                 style_image, session, net, num_iter, loss_ratio, content_loss_norm_type):
+                 style_images, session, net, num_iter, loss_ratio, content_loss_norm_type):
 
         self.net = net
         self.sess = session
@@ -16,7 +16,7 @@ class StyleTransfer:
 
         # preprocess input images
         self.p0 = np.float32(self.net.preprocess(content_image))
-        self.a0 = np.float32(self.net.preprocess(style_image))
+        self.a0 = np.asarray([np.float32(self.net.preprocess(style_image)) for style_image in style_images])
         self.x0 = np.float32(self.net.preprocess(init_image))
 
         # parameters for optimization
@@ -48,7 +48,7 @@ class StyleTransfer:
         self.As = {}
         for id in self.STYLE_LAYERS:
             self.As[id] = self._gram_matrix(style_layers[id])
-        
+
         # get layer-values for x
         self.Fs = self.net.feed_forward(self.x, scope='mixed')
 
