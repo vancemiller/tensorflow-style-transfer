@@ -28,7 +28,7 @@ def parse_args():
                         help='Style loss for each content is multiplied by corresponding weight')
 
     parser.add_argument('--initial_type', type=str, default='content', choices=['random','content','style'], help='The initial image for optimization (notation in the paper : x)')
-    parser.add_argument('--max_size', type=int, default=512, help='The maximum width or height of input images')
+    parser.add_argument('--max_size', type=int, default=None, help='The maximum width or height of input images')
     parser.add_argument('--content_loss_norm_type', type=int, default=3, choices=[1,2,3], help='Different types of normalization for content loss')
     parser.add_argument('--num_iter', type=int, default=1000, help='The number of iterations to run')
 
@@ -48,7 +48,7 @@ def check_args(args):
         return None
 
     try:
-        assert args.max_size > 100
+        assert args.max_size is None or args.max_size > 100
     except:
         print ('Too small size')
         return None
@@ -134,17 +134,12 @@ def main():
     # open session
     sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
 
-    # format images for graph
-    init_image = add_one_dim(init_image)
-    content_image = add_one_dim(content_image)
-    for i in range(len(style_images)):
-        style_images[i] = add_one_dim(style_images[i])
     # build the graph
     st = style_transfer.StyleTransfer(session = sess,
                                       content_layer_ids = CONTENT_LAYERS,
                                       style_layer_ids = STYLE_LAYERS,
-                                      init_image = init_image,
-                                      content_image = content_image,
+                                      init_image = add_one_dim(init_image),
+                                      content_image = add_one_dim(content_image),
                                       style_images = style_images,
                                       net = vgg_net,
                                       num_iter = args.num_iter,
