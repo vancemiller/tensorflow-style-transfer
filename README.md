@@ -19,10 +19,10 @@ The implementation is coincided with the paper both in variable-names and algori
 
 ### Running
 ```
-python run_main.py --content <content file> --styles <style folder> --output <output file>
+python run_main.py --content <content file> --styles <style folder> --n_styles 1 --output <output file> 
 ```
 *Example*:
-`python run_main.py --content images/tubingen.jpg --styles styles/ --output result.jpg`
+`python run_main.py --content content_images/tubingen.jpg --styles artists/monet --n_styles 1 --output result.jpg`
 
 #### Arguments
 *Required* :
@@ -31,6 +31,7 @@ python run_main.py --content <content file> --styles <style folder> --output <ou
 * `--output`: Filename of the output image. *Default*: `result.jpg`
 
 *Optional* :
+* `--n_styles`: Number of style images to use for style transfer. *Default*: all
 * `--model_path`: Relative or absolute directory path to pre trained model. *Default*: `pre_trained_model`
 * `--loss_ratio`: Weight of content-loss relative to style-loss. Alpha over beta in the paper. *Default*: `1e-3`
 * `--content_layers`: *Space-separated* VGG-19 layer names used for content loss computation. *Default*: `conv4_2`
