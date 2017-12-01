@@ -15,14 +15,14 @@ The implementation is coincided with the paper both in variable-names and algori
 3. Pretrained VGG19 file : [imagenet-vgg-verydeep-19.mat](http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-19.mat)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Please download the file from link above.
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Save the file under `pre_trained_model`
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Save the file in a folder named `pre_trained_model`
 
 ### Running
 ```
-python run_main.py --content <content file> --styles <style folder> --output <output file>
+python3 run_main.py --content <content file> --styles <style folder> --n_styles 1 --output <output file> 
 ```
 *Example*:
-`python run_main.py --content images/tubingen.jpg --styles styles/ --output result.jpg`
+`python3 run_main.py --content content_images/tubingen.jpg --styles artists/monet --n_styles 1 --output result.jpg`
 
 #### Arguments
 *Required* :
@@ -31,13 +31,14 @@ python run_main.py --content <content file> --styles <style folder> --output <ou
 * `--output`: Filename of the output image. *Default*: `result.jpg`
 
 *Optional* :
+* `--n_styles`: Number of style images to use for style transfer. *Default*: all
 * `--model_path`: Relative or absolute directory path to pre trained model. *Default*: `pre_trained_model`
 * `--loss_ratio`: Weight of content-loss relative to style-loss. Alpha over beta in the paper. *Default*: `1e-3`
 * `--content_layers`: *Space-separated* VGG-19 layer names used for content loss computation. *Default*: `conv4_2`
 * `--style_layers`: *Space-separated* VGG-19 layer names used for style loss computation. *Default*: `relu1_1 relu2_1 relu3_1 relu4_1 relu5_1`
 * `--content_layer_weights`: *Space-separated* weights of each content layer to the content loss. *Default*: `1.0`
 * `--style_layer_weights`: *Space-separated* weights of each style layer to loss. *Default*: `0.2 0.2 0.2 0.2 0.2`
-* `--max_size`: Maximum width or height of the input images. *Default*: `512`
+* `--max_size`: Maximum width or height of the input images. *Default*: None
 * `--num_iter`: The number of iterations to run. *Default*: `1000`
 * `--initial_type`: The initial image for optimization. (notation in the paper : x) *Choices*: content, style, random. *Default*: `'content'`
 * `--content_loss_norm_type`: Different types of normalization for content loss. *Choices*: [1](https://arxiv.org/pdf/1508.06576v2.pdf), [2](https://arxiv.org/abs/1604.08610), [3](https://github.com/cysmith/neural-style-tf). *Default*: `3`
