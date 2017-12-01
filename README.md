@@ -19,10 +19,10 @@ The implementation is coincided with the paper both in variable-names and algori
 
 ### Running
 ```
-python run_main.py --content <content file> --styles <style folder> --n_styles 1 --output <output file> 
+python3 run_main.py --content <content file> --styles <style folder> --n_styles 1 --output <output file> 
 ```
 *Example*:
-`python run_main.py --content content_images/tubingen.jpg --styles artists/monet --n_styles 1 --output result.jpg`
+`python3 run_main.py --content content_images/tubingen.jpg --styles artists/monet --n_styles 1 --output result.jpg`
 
 #### Arguments
 *Required* :
