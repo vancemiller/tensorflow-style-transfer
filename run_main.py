@@ -15,6 +15,7 @@ def parse_args():
     parser.add_argument('--model_path', type=str, default='pre_trained_model', help='The directory where the pre-trained model was saved')
     parser.add_argument('--content', type=str, default='images/tubingen.jpg', help='File path of content image (notation in the paper : p)', required = True)
     parser.add_argument('--styles', type=str, default='styles/', help='Path to folder containing style images (notation in the paper : a)', required = True)
+    parser.add_argument('--n_styles', type=int, default=None, help='Number of provided styles to consider (default = all)', required = False)
     parser.add_argument('--output', type=str, default='result.jpg', help='File path of output image', required = True)
 
     parser.add_argument('--loss_ratio', type=float, default=1e-3, help='Weight of content-loss relative to style-loss')
@@ -106,6 +107,8 @@ def main():
     content_image = utils.load_image(args.content, max_size=args.max_size)
     style_images = []
     for style in os.listdir(args.styles):
+        if len(style_images) == args.n_styles:
+            break
         style_images.append(utils.load_image(args.styles + '/' + style, shape=(content_image.shape[1], content_image.shape[0])))
     style_images = np.asarray(style_images)
 
